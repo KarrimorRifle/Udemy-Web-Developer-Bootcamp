@@ -1,0 +1,32 @@
+body{
+    background-color: #04002b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+button{
+    background:none;
+    color:#ffa260;
+    border: 2px solid;
+    padding: 1em;
+    transition-duration: .15s;
+}
+
+button:hover{
+    border-color: #f1ff5c;
+    color: white;
+    box-shadow: 0 0 1em 0.1em #f1ff5c;
+    transform: translatey(-0.3em);
+    cursor: pointer;
+}
+button:active{
+    
+    border-color: #a3560a;
+    color:#757575;
+    box-shadow: 0 0 2em 0.2em #a3560a;
+    transform: scale(1.1,1.1);
+    cursor:progress;
+    transition-duration: 0s;
+}
