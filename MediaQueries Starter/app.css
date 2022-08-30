@@ -1,0 +1,49 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+    font-size: 6em;
+    text-align: center;
+}
+nav {
+    font-size: 1.5em;
+    border-style: solid;
+    border-width: 0.15em;
+    border-radius: 0.1em;
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+a{
+    text-decoration: none;
+}
+ul{
+    max-width: 50%;
+    flex-grow: 1;
+    min-width: 310px;
+    align-self: flex-end;
+}
+nav > a{
+    align-self: flex-start;
+}
+
+ul,li {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    border-style: solid;
+    border-width: 0.1em;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+@media (max-width: 650px) {
+    h1{
+        font-size: 3em;
+    }
+    
+}
+
