@@ -1,0 +1,11 @@
+<% layout('layout/boilerplate') %> 
+    <h1>New Campground</h1>
+    <form action="/campgrounds" method="POST">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" placeholder="Title">
+        <label for="location">Location:</label>
+        <input type="text" name="location" id="location" placeholder="Location">
+        <label for="price">Price:</label>
+        <input type="number" name="price" id="price" placeholder="Price">
+        <button>Add Campground</button>
+    </form>

@@ -24,7 +24,7 @@ reset.addEventListener("click",function(){
 
 let wintest = function(){
     let max = playTo.value;
-    if(point1 == max || point2 == max){
+    if(point1 >= max || point2 >= max){
         btn1.toggleAttribute("disabled");
         btn2.toggleAttribute("disabled");
         if(point1 > point2){
