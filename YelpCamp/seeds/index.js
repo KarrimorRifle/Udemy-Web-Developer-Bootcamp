@@ -3,6 +3,7 @@ const cities = require('./cities')
 const mongoose = require('mongoose');
 const {places,descriptors} = require('./seedHelpers');
 const fetch = require('node-fetch');
+const {reviewSchema} = require('../models/review')
 
 
 main().catch(err => console.log(err));
@@ -15,10 +16,10 @@ async function main() {
 
 const sample = array => array[Math.floor(Math.random()* array.length)];
 
-// let xhr = new XMLHttpRequest();
-// xhr.open("GET",'https://api.unsplash.com/collections/483251/?client_id=apXL2cicGwpIBkhjVsiK4XZyOtxoCpD6nWwdF3X0IOw');
-// xhr.send();
-// xhr.onload = () => console.log(xhr.responseText);
+// // let xhr = new XMLHttpRequest();
+// // xhr.open("GET",'https://api.unsplash.com/collections/483251/?client_id=apXL2cicGwpIBkhjVsiK4XZyOtxoCpD6nWwdF3X0IOw');
+// // xhr.send();
+// // xhr.onload = () => console.log(xhr.responseText);
 
 
 
@@ -45,3 +46,4 @@ const seedDB = async () =>{
 
 seedDB()
 
+// const Review = mongoose.model('Review', reviewSchema);
