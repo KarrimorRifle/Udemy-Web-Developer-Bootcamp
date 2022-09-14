@@ -7,24 +7,25 @@
     <title>Campgrounds</title>
 </head>
 <body> -->
-    <% layout('layout/boilerplate') %> 
-        <% for(let camp of campgrounds){ %> 
-            <div class="card mb-3">
-                <div class="row">
-                    <div class="col-md-4">
-                        <img src="<%=camp.image%>" alt="" class="img-fluid">
-                    </div>
-                    <div class="col-md-8">
-                        <h5 class="card-title"><%=camp.title%></h5>
-                        <p class="card-text"><%=camp.description%></p>
-                        <p class="card-text">
-                            <small class="text-muted"><%=camp.location%></small>
-                        </p>
-                        <a class="btn btn-primary" href="/campgrounds/<%=camp.id%>">View <%=camp.title%></a>
-                    </div>
-                </div>
+<% layout('layout/boilerplate') %> 
+<%- include('../partials/alerts') %> 
+<% for(let camp of campgrounds){ %> 
+    <div class="card mb-3">
+        <div class="row">
+            <div class="col-lg-4 col-md-5" >
+                <img src="<%=camp.image%>" alt="" class="img-fluid">
             </div>
-        <% } %> 
+            <div class="col-lg-8 col-md-7 p-lg-2 p-md-3 p-5">
+                <h5 class="card-title"><%=camp.title%></h5>
+                <p class="card-text"><%=camp.description%></p>
+                <p class="card-text">
+                    <small class="text-muted"><%=camp.location%></small>
+                </p>
+                <a class="btn btn-primary" href="/campgrounds/<%=camp.id%>">View <%=camp.title%></a>
+            </div>
+        </div>
+    </div>
+<% } %> 
 <!--     
 </body>
 </html> -->

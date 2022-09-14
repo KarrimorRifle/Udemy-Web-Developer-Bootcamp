@@ -3,15 +3,18 @@
     <form action="/campgrounds/<%= camp.id %>?_method=PATCH " method="POST" class="needs-validation" novalidate>
         <div class="form-group">
             <label for="title">Title:</label>
-            <input type="text" id="title" name="title" class="form-control" placeholder="Title" value="<%=camp.title%>" required>
+            <input type="text" id="title" name="campground[title]" class="form-control" placeholder="Title" value="<%=camp.title%>" required>
+            <div class="invalid-feedback">Please put a title</div>
         </div>
         <div class="form-group">
             <label for="location">Location:</label>
-            <input type="text" id="location" name="location" class="form-control" placeholder="Location" value="<%=camp.location%>" required>
+            <input type="text" id="location" name="campground[location]" class="form-control" placeholder="Location" value="<%=camp.location%>" required>
+            <div class="invalid-feedback">Please put a place</div>
         </div>
         <div class="form-group">
             <label for="image">Image URL:</label>
-            <input type="text" id="image" name="image" class="form-control" placeholder="Image URL" value="<%=camp.image%>" required>
+            <input type="text" id="image" name="campground[image]" class="form-control" placeholder="Image URL" value="<%=camp.image%>" required>
+            <div class="invalid-feedback">Please put a valid image URL</div>
         </div>
         <div class="col-auto">
             <label class="sr-only" for="price">Price</label>
@@ -19,12 +22,13 @@
                 <div class="input-group-prepend">
                 <div class="input-group-text">£</div>
                 </div>
-            <input type="number" class="form-control" id="price" name="price"placeholder="0.00" step="0.01" value="<%=camp.price%>" required>
+            <input type="number" class="form-control" id="price" name="campground[price]" placeholder="0.00" step="0.01" value="<%=camp.price%>" required>
+            <div class="invalid-feedback">Please put a price</div>
             </div>
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
-            <textarea class="form-control" name="description" id="description" cols="30" rows="5" ><%=camp.description%></textarea>
+            <textarea class="form-control" name="campground[description]" id="description" cols="30" rows="5" ><%=camp.description%></textarea>
         </div>
         
         <button type="submit" class="btn btn-success mt-3">Submit</button>
