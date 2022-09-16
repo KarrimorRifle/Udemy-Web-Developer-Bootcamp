@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const {places,descriptors} = require('./seedHelpers');
 const fetch = require('node-fetch');
 const {reviewSchema} = require('../models/review')
-
+const Users = require('../models/user')
 
 main().catch(err => console.log(err));
 
@@ -36,7 +36,9 @@ const seedDB = async () =>{
             image: images[Math.floor(Math.random()*imageNum)].urls.regular,
             title: `${sample(descriptors)} ${sample(places)}`,
             price: random1000/100,
+            author: '632470727d03451de01d1702',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat voluptatum nesciunt odit, tempore deleniti enim ipsum velit possimus incidunt ipsa nemo reiciendis quis sed dolore? Voluptate consectetur adipisci nostrum laudantium Quas architecto magnam impedit! Porro, dicta. Dignissimos explicabo at alias odit officiis id eaque, tempore culpa, fugiat est saepe quia in, incidunt quisquam dicta perspiciatis sunt quae numquam cumque repellat'
+            
             })
         await camp.save();
     }

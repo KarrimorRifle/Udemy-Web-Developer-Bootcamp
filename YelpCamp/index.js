@@ -6,11 +6,16 @@ const app = express();
 const engine = require('ejs-mate');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+const cookieParser = require("cookie-parser");
+app.use(cookieParser())
 
 //essential requires
 const Campground = require('./models/campground');
 const catchAsync = require('./utility/catchAsync');
 const ExpressError = require('./utility/ExpressError');
+const User = require('./models/user');
 
 //express set up
 app.engine('ejs',engine);
@@ -21,6 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(session({secret: 'haKBsg30s',
+  keepSessionInfo:true,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -30,9 +36,18 @@ app.use(session({secret: 'haKBsg30s',
 }));
 app.use(flash());
 
+//passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 //Route requires
-const campgrounds = require('./routes/campgrounds');
-const reviews = require('./routes/review');
+const campgroundsRoute = require('./routes/campgrounds');
+const reviewsRoute = require('./routes/review');
+const usersRoute = require('./routes/users');
 
 //mongoose set up
 const mongoose = require('mongoose');
@@ -44,6 +59,7 @@ async function main() {
 
 //flash middleware
 app.use((req,res,next) => {
+  res.locals.currentUser = req.user;
   res.locals.success = req.flash('success');
   res.locals.reviewSuccess = req.flash('reviewSuccess');
   res.locals.err = req.flash('error');
@@ -51,8 +67,15 @@ app.use((req,res,next) => {
 })
 
 //app route use
-app.use('/campgrounds', campgrounds);//campgrounds
-app.use('/campgrounds/:id/reviews', reviews);//reviews
+app.use('/campgrounds', campgroundsRoute);//campgrounds
+app.use('/campgrounds/:id/reviews', reviewsRoute);//reviews
+app.use('/', usersRoute);//users
+
+//User Creation:
+// app.get('/fakeUser',async (req,res) => {
+//   const user = new User({email: 'example@gmail.com', username: 'user'})
+
+// })
 
 //Home Page
 app.get('/', catchAsync (async(req, res) => {

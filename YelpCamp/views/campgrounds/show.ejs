@@ -1,33 +1,65 @@
 <% layout('layout/boilerplate') %> 
 <%- include('../partials/alerts') %> 
+<link rel="stylesheet" type="text/css" href="/styles/starability-basic.css"/>
 <div class="row mb-3">
+    <% if(currentUser){%> 
     <div class="col-12 col-lg-6">
+    <% }else{ %> 
+    <div class="col-8 offset-2">
+    <% } %> 
         <div class="card" style="width: 100%;">
             <img class="card-img-top" src="<%=camp.image%>" alt="Card image cap">
             <div class="card-body">
             <h5 class="card-title"><%=camp.title  %> </h5>
+            <span class="text-muted my-0">Author: <%= camp.author.username %> </span>
             <p class="card-text"><%=camp.description %> .</p>
             </div>
             <ul class="list-group list-group-flush">
             <li class="list-group-item text-muted">Location: <%= camp.location %> </li>
             <li class="list-group-item">Price: £<%= camp.price %>/ night </li>
             </ul>
+            <% if(currentUser && (currentUser.id == camp.author.id)){ %> 
             <div class="card-body">
-                <a href="/campgrounds/<%= camp.id %>/edit " class="card-link btn btn-info">Edit</a>
-                <form class="d-inline" action="/campgrounds/<%=camp.id%>?_method=DELETE" method="post">
-                    <button class="btn btn-danger">Delete</button>
+                <a href="/campgrounds/<%= camp.id %>/edit " class="card-link btn btn-info" style="color:white"><svg width="25" height="25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 20h4L18.5 9.5a2.829 2.829 0 0 0-4-4L4 16v4Z"></path>
+                    <path d="m13.5 6.5 4 4"></path>
+                  </svg></a>
+                <form class="d-inline ms-2" action="/campgrounds/<%=camp.id%>?_method=DELETE" method="post">
+                    <button class="btn btn-danger" style="color:white"><svg width="25" height="25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 7h16"></path>
+                        <path d="M10 11v6"></path>
+                        <path d="M14 11v6"></path>
+                        <path d="m5 7 1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12"></path>
+                        <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path>
+                      </svg></button>
                 </form>
             </div>
+            <% } %> 
         </div>
     </div>
+    <% if(currentUser){%> 
     <div class="col-12 col-lg-6">
+    <% }else{ %> 
+    <div class="col-8 offset-2">
+    <% } %> 
+        <% if(currentUser){ %> 
         <h3 class="mt-3">Leave A Review</h3>
         <div class="mb-4 card">
             <form class="m-3 needs-validation" action="/campgrounds/<%=camp.id%>/reviews" method="POST" novalidate>
-                <div class="mb-3">
-                    <label form="form-label" for="rating">Rating</label>
-                    <input class="form-range" name="review[rating]" type="range" min="1" max="5" step="1">
-                </div>
+                <fieldset class="starability-basic">
+                    <legend>First rating:</legend>
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                    <label for="first-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
                 <div class="mb-3">
                     <label class="form-label" for="body">Comment</label>
                     <textarea class="form-control" name="review[body]" id="body" cols="20" rows="5" required></textarea>
@@ -36,13 +68,40 @@
                 <button class="btn btn-success">Submit</button>
             </form>
         </div>
+        <% } %> 
         <% for(let review of camp.reviews){ %> 
             <div class="card my-3">
                 <div class="card-body">
                 <h5 class="pl-3 m-0"><b>Rating: <%= review.rating %>/5</b></h5>
-                <hr>
+                <div class="d-flex justify-content-between">
+                    <p class="card-subtitle text-muted">by <%= review.author.username %> </p>
+                    <div>
+                        <% for(let i = 1; i<= 5; i++){ %>
+                            <div class="d-inline"style="color: #f7c348">
+                                <% if( i <= review.rating){ %> 
+                                <svg width="23" height="23" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18.469 22.5a.75.75 0 0 1-.44-.14L12 17.99l-6.029 4.37a.75.75 0 0 1-1.15-.847l2.35-6.965-6.093-4.178A.75.75 0 0 1 1.5 9h7.518l2.268-6.981a.75.75 0 0 1 1.427 0l2.27 6.984H22.5a.75.75 0 0 1 .424 1.369l-6.096 4.176 2.35 6.963a.75.75 0 0 1-.71.99Z"></path>
+                                </svg>
+                                <% }else{ %> 
+                                <svg width="23" height="23" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M22.5 9.75h-8.063L12 2.25l-2.438 7.5H1.5l6.563 4.5-2.532 7.5L12 17.062l6.469 4.688-2.532-7.5 6.563-4.5Z"></path>
+                                </svg>
+                                <% } %> 
+                            </div>
+                        <% } %> 
+                    </div>
+                </div>
                 <p><b>Review:</b><br><%= review.body %></p>
-                <form action="/campgrounds/<%=camp.id%>/reviews/<%=review.id%>?_method=DELETE" method="POST" ><button class="btn btn-sm btn-danger">Delete</button></form>
+                
+                <% if(currentUser && (currentUser.id == review.author.id)){ %> 
+                <form action="/campgrounds/<%=camp.id%>/reviews/<%=review.id%>?_method=DELETE" method="POST" ><button class="btn btn-sm btn-danger" style="color:white"><svg width="25" height="25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 7h16"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                    <path d="m5 7 1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12"></path>
+                    <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path>
+                  </svg></button></form>
+                <% } %> 
                 </div>
             </div>
         <% } %> 
