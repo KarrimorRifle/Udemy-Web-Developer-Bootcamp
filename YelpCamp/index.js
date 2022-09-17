@@ -17,6 +17,11 @@ const catchAsync = require('./utility/catchAsync');
 const ExpressError = require('./utility/ExpressError');
 const User = require('./models/user');
 
+//.env setup
+if(process.env.NODE_ENV !== "production"){
+  require('dotenv').config();
+};
+
 //express set up
 app.engine('ejs',engine);
 app.use(methodoverride('_method'));
@@ -40,7 +45,6 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
