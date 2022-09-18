@@ -9,7 +9,7 @@ const flash = require('connect-flash');
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const cookieParser = require("cookie-parser");
-app.use(cookieParser())
+app.use(cookieParser());
 
 //essential requires
 const Campground = require('./models/campground');

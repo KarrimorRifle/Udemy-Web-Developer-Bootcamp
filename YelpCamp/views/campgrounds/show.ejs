@@ -8,11 +8,32 @@
     <div class="col-8 offset-2">
     <% } %> 
         <div class="card" style="width: 100%;">
-            <img class="card-img-top" src="<%=camp.image%>" alt="Card image cap">
+
+            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+            <% for(let img of camp.images){ %> 
+            <!-- <img class="card-img-top" src="" alt="Card image cap"> -->
+                    <div class="carousel-item active">
+                        <img src="<%=img.url%>" class="d-block w-100" style="height: 70vh; object-fit: cover;" alt="...">
+                    </div>
+            <% } %>
+                </div>
+            <% if(camp.images.length > 1){ %>                      
+                
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button> 
+            <% } %> 
+            </div>
             <div class="card-body">
-            <h5 class="card-title"><%=camp.title  %> </h5>
-            <span class="text-muted my-0">Author: <%= camp.author.username %> </span>
-            <p class="card-text"><%=camp.description %> .</p>
+                <h5 class="card-title"><%=camp.title  %> </h5>
+                <span class="text-muted my-0">Author: <%= camp.author.username %> </span>
+                <p class="card-text"><%=camp.description %> .</p>
             </div>
             <ul class="list-group list-group-flush">
             <li class="list-group-item text-muted">Location: <%= camp.location %> </li>

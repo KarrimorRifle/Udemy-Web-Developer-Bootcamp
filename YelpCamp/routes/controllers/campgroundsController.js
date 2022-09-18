@@ -44,6 +44,8 @@ module.exports.showCampgroundByParamId = catchAsync( async(req,res) => {
 
 module.exports.createNewCampground = catchAsync( async(req, res) => {
     const newCamp = new Campground(req.body.campground)
+    console.log(req.files);
+    newCamp.images = req.files.map(f => ({url: f.path, fileName: f.fileName}))
     newCamp.author = req.user.id;
     await newCamp.save();
     req.flash('success', 'Campground has been created!')
