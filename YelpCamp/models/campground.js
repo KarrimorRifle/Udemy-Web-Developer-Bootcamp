@@ -5,19 +5,34 @@ const Review = require('./review');
 const Schema = mongoose.Schema;
 const User = require('./user')
 
+const ImageSchema = new Schema({
+    url: String,
+    fileName: String
+})
+ImageSchema.virtual('thumbnail').get(function(){
+    return this.url.replace('/upload','/upload/w_400');
+})
+
 const CampgroundSchema = new Schema({
     title:{
         type: String,
         required: true,
     },
-    location:{
-        type: String,
-        required: true
+    geometry:{
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates:{
+            type: [Number],
+            required: true
+        }
     },
-    images:[{
-        url: String,
-        fileName: String,
-    }],
+    location:{
+        type: String
+    },
+    images:[ImageSchema],
     price:{
         type: Number,
         min: 0,

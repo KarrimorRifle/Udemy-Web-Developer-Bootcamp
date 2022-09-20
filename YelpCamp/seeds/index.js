@@ -11,6 +11,12 @@ if(process.env.NODE_ENV !== "production"){
 
 main().catch(err => console.log(err));
 
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+
+//mapbox
+mapBoxToken = process.env.mapbox_token;
+geoCoder = mbxGeocoding({ accessToken: mapBoxToken});
+
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/yelp-camp');
   
@@ -27,45 +33,63 @@ const sample = array => array[Math.floor(Math.random()* array.length)];
 
 
 const seedDB = async () =>{
-    let images = await fetch(process.env.unsplash)
-        .then(res => res.text())
-        .then(text => JSON.parse(text))
-    await Campground.deleteMany({});
-    for(let i=0; i<50; i++){
-        let imageNum = images.length;
-        const random1000 = Math.floor(Math.random()*1000);
-        const camp = new Campground({
-            location: `${cities[random1000].city}, ${cities[random1000].state}`,
-            title: `${sample(descriptors)} ${sample(places)}`,
-            price: random1000/100,
-            author: '632470727d03451de01d1702',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat voluptatum nesciunt odit, tempore deleniti enim ipsum velit possimus incidunt ipsa nemo reiciendis quis sed dolore? Voluptate consectetur adipisci nostrum laudantium Quas architecto magnam impedit! Porro, dicta. Dignissimos explicabo at alias odit officiis id eaque, tempore culpa, fugiat est saepe quia in, incidunt quisquam dicta perspiciatis sunt quae numquam cumque repellat',
-            images: [
-                {
-                  url: 'https://res.cloudinary.com/dg7f4euwg/image/upload/v1663460125/YelpCamp/ymtfn04ye3ykxywakvke.jpg',
-                  fileName: 'YelpCamp/ymtfn04ye3ykxywakvke'
-                },
-                {
-                  url: 'https://res.cloudinary.com/dg7f4euwg/image/upload/v1663460126/YelpCamp/rznyxa25eu1hq0orzcof.jpg',
-                  fileName: 'YelpCamp/rznyxa25eu1hq0orzcof'
-                },
-                {
-                  url: 'https://res.cloudinary.com/dg7f4euwg/image/upload/v1663460128/YelpCamp/yctperh6otlmlahshxxb.jpg',
-                  fileName: 'YelpCamp/yctperh6otlmlahshxxb'
-                },
-                {
-                  url: 'https://res.cloudinary.com/dg7f4euwg/image/upload/v1663460129/YelpCamp/pkz1kcrmpo6rzycvbvso.jpg',
-                  fileName: 'YelpCamp/pkz1kcrmpo6rzycvbvso'
-                }
-              ]
-                        
-            })
-        await camp.save();
-    }
+  let images = await fetch(process.env.unsplash)
+      .then(res => res.text())
+      .then(text => JSON.parse(text))
+  await Campground.deleteMany({});
+  for(let i=0; i<200; i++){
+    let imageNum = images.length;
+    const random1000 = Math.floor(Math.random()*1000);
+    const loc = `${cities[random1000].city}, ${cities[random1000].state}`;
+    let geoData = null;
+    // try{
+    //     geoData = await geoCoder.forwardGeocode({
+    //     query: loc,
+    //     limit: 1
+    //   }).send()}
+    // catch(e){console.log(e)};
+    try{
+    const camp = new Campground({
+      location: loc,
+      geometry: {
+        type: "Point",
+        coordinates:[
+          cities[random1000].longitude,
+          cities[random1000].latitude
+        ]
+      },
+      title: `${sample(descriptors)} ${sample(places)}`,
+      price: random1000/100,
+      author: '632470727d03451de01d1702',
+      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat voluptatum nesciunt odit, tempore deleniti enim ipsum velit possimus incidunt ipsa nemo reiciendis quis sed dolore? Voluptate consectetur adipisci nostrum laudantium Quas architecto magnam impedit! Porro, dicta. Dignissimos explicabo at alias odit officiis id eaque, tempore culpa, fugiat est saepe quia in, incidunt quisquam dicta perspiciatis sunt quae numquam cumque repellat',
+      images: [
+        {
+          url: 'https://res.cloudinary.com/dg7f4euwg/image/upload/v1663460125/YelpCamp/ymtfn04ye3ykxywakvke.jpg',
+          fileName: 'YelpCamp/ymtfn04ye3ykxywakvke'
+        },
+        {
+          url: 'https://res.cloudinary.com/dg7f4euwg/image/upload/v1663460126/YelpCamp/rznyxa25eu1hq0orzcof.jpg',
+          fileName: 'YelpCamp/rznyxa25eu1hq0orzcof'
+        },
+        {
+          url: 'https://res.cloudinary.com/dg7f4euwg/image/upload/v1663460128/YelpCamp/yctperh6otlmlahshxxb.jpg',
+          fileName: 'YelpCamp/yctperh6otlmlahshxxb'
+        },
+        {
+          url: 'https://res.cloudinary.com/dg7f4euwg/image/upload/v1663460129/YelpCamp/pkz1kcrmpo6rzycvbvso.jpg',
+          fileName: 'YelpCamp/pkz1kcrmpo6rzycvbvso'
+        }
+      ]             
+    })
+    await camp.save();}
+    catch(e){console.log(e)}
+  }
+  console.log('complete!')
 }
 
 
 
 seedDB()
+
 
 // const Review = mongoose.model('Review', reviewSchema);

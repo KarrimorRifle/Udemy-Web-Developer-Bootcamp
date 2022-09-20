@@ -7,7 +7,14 @@ const catchAsync = require('../../utility/catchAsync');
 const ExpressError = require('../../utility/ExpressError');
 const Campground = require('../../models/campground');
 const {campgroundSchema} = require('../../models/JoiSchema');
-const {isLoggedIn, campAuth} = require('../../utility/middleWare')
+const {isLoggedIn, campAuth} = require('../../utility/middleWare');
+const campground = require('../../models/campground');
+const {cloudinary} = require('../../cloudinary')
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+
+//mapbox
+mapBoxToken = process.env.mapbox_token;
+geoCoder = mbxGeocoding({ accessToken: mapBoxToken});
 
 //middleware
 module.exports.validateCampground = (req,res,next) => {
@@ -43,7 +50,13 @@ module.exports.showCampgroundByParamId = catchAsync( async(req,res) => {
 })
 
 module.exports.createNewCampground = catchAsync( async(req, res) => {
-    const newCamp = new Campground(req.body.campground)
+    const geoData = await geoCoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send()
+    const newCamp = new Campground(req.body.campground);
+    newCamp.geometry = geoData.body.features[0].geometry;
+    console.log(geoData.body.features[0].geometry)
     console.log(req.files);
     newCamp.images = req.files.map(f => ({url: f.path, fileName: f.fileName}))
     newCamp.author = req.user.id;
@@ -64,6 +77,15 @@ module.exports.editCampgroundByParamIdForm = catchAsync (async (req,res) => {
 module.exports.editCampgroundByParamId = catchAsync( async(req, res) => {
     const {id} = req.params;
     const camp = await Campground.findByIdAndUpdate(id,req.body);
+    const imgs = req.files.map(f => ({url: f.path, fileName: f.filename}));
+    camp.images.push(...imgs);
+    await camp.save();
+    if(req.body.deleteImages){
+        for(let fileName of req.body.deleteImages){
+            await cloudinary.uploader.destroy(fileName);
+        }
+        await camp.updateOne({$pull:{images:{fileName: {$in: req.body.deleteImages}}}});
+    }
     req.flash('success', 'Campground changes have been saved!')
     res.redirect(`/campgrounds/${id}`);
 })

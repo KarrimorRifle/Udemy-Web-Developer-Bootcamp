@@ -19,7 +19,7 @@ router.get('/new',isLoggedIn, controller.newCampground)
 
 router.route('/:id')
     .get(controller.showCampgroundByParamId)
-    .patch(isLoggedIn,campAuth, validateCampground, controller.editCampgroundByParamId)
+    .patch(isLoggedIn,campAuth,upload.array('campground[images]'), validateCampground, controller.editCampgroundByParamId)
     .delete(isLoggedIn,campAuth, controller.deleteCampgroundByParamId)
 
 router.get('/:id/edit',isLoggedIn, campAuth, controller.editCampgroundByParamIdForm)
