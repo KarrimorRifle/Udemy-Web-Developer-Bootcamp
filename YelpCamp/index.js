@@ -10,12 +10,14 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
+const helmet = require('helmet')
 
 //essential requires
 const Campground = require('./models/campground');
 const catchAsync = require('./utility/catchAsync');
 const ExpressError = require('./utility/ExpressError');
 const User = require('./models/user');
+const mongoSanitize = require('express-mongo-sanitize');
 
 //.env setup
 if(process.env.NODE_ENV !== "production"){
@@ -35,11 +37,15 @@ app.use(session({secret: 'haKBsg30s',
   resave: false,
   saveUninitialized: true,
   cookie: {
+    httpOnly: true,
     expires: Date.now() + 60 * 60 * 1000,
     maxAge: 60 * 60 * 1000
   }
 }));
 app.use(flash());
+app.use(mongoSanitize());
+app.use(helmet({contentSecurityPolicy: false,
+  referrerPolicy: false}));
 
 //passport
 app.use(passport.initialize());

@@ -1,52 +1,56 @@
-<% layout('layout/boilerplate') %> 
-    <h1>New Campground</h1>
-    <form action="/campgrounds/<%= camp.id %>?_method=PATCH " method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-        <div class="form-group">
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="campground[title]" class="form-control" placeholder="Title" value="<%=camp.title%>" required>
-            <div class="invalid-feedback">Please put a title</div>
-        </div>
-        <div class="form-group">
-            <label for="location">Location:</label>
-            <input type="text" id="location" name="campground[location]" class="form-control" placeholder="Location" value="<%=camp.location%>" required>
-            <div class="invalid-feedback">Please put a place</div>
-        </div>
-        <div class="form-group">
-            <label for="image">Images:</label>
-            <!-- <input type="text" id="image" name="campground[image]" class="form-control" placeholder="Image URL" value="<%=camp.image%>" required> -->
-            <input type="file" name="campground[images]" id="images" class="form-control" multiple>
-        </div>
-        <div class="col-auto">
-            <label class="sr-only" for="price">Price</label>
-            <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                <div class="input-group-text">£</div>
-                </div>
-            <input type="number" class="form-control" id="price" name="campground[price]" placeholder="0.00" step="0.01" value="<%=camp.price%>" required>
-            <div class="invalid-feedback">Please put a price</div>
+<% layout('layout/boilerplate') %>
+<div class="card text-bg-dark">
+    <div class="container my-3">
+        <h1 class="card-title">New Campground</h1>
+        <form action="/campgrounds/<%= camp.id %>?_method=PATCH " method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="campground[title]" class="form-control" placeholder="Title" value="<%=camp.title%>" required>
+                <div class="invalid-feedback">Please put a title</div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea class="form-control" name="campground[description]" id="description" cols="30" rows="5" ><%=camp.description%></textarea>
-        </div>
-        
-        <button type="submit" class="btn btn-success mt-3">Submit</button>
-        <button type="button" id="cancel" class="btn btn-danger mt-3">Cancel</button>
-        <div class="container d-inline-flex flex-wrap my-4">
-        <% camp.images.forEach(function(img,i){ %> 
-                <div class="col-4">
-                    <img src="<%=img.thumbnail%>" alt="" class="img-fluid" style="border-width: 2px; border-color:black; border-style:solid; border-radius:20px">
-                    <div class="form-check-inline">
-                        <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.fileName%>">
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="campground[location]" class="form-control" placeholder="Location" value="<%=camp.location%>" required>
+                <div class="invalid-feedback">Please put a place</div>
+            </div>
+            <div class="form-group">
+                <label for="image">Images:</label>
+                <!-- <input type="text" id="image" name="campground[image]" class="form-control" placeholder="Image URL" value="<%=camp.image%>" required> -->
+                <input type="file" name="campground[images]" id="images" class="form-control" multiple>
+            </div>
+            <div class="col-auto">
+                <label class="sr-only" for="price">Price</label>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                    <div class="input-group-text">£</div>
                     </div>
-                    <label for="image-<%=i%>">Delete?</label>
-                </div>    
-        <% }) %> 
-        </div>
-        <script type="text/javascript">
-            document.getElementById("cancel").onclick = function () {
-                location.href = "/campgrounds/<%=camp.id%>";
-            };
-        </script>
-    </form>
+                <input type="number" class="form-control" id="price" name="campground[price]" placeholder="0.00" step="0.01" value="<%=camp.price%>" required>
+                <div class="invalid-feedback">Please put a price</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" name="campground[description]" id="description" cols="30" rows="5" ><%=camp.description%></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-success mt-3">Submit</button>
+            <button type="button" id="cancel" class="btn btn-danger mt-3">Cancel</button>
+            <div class="container d-inline-flex flex-wrap my-4">
+            <% camp.images.forEach(function(img,i){ %> 
+                    <div class="col-4">
+                        <img src="<%=img.thumbnail%>" alt="" class="img-fluid" style="border-width: 2px; border-color:black; border-style:solid; border-radius:20px">
+                        <div class="form-check-inline">
+                            <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.fileName%>">
+                        </div>
+                        <label for="image-<%=i%>">Delete?</label>
+                    </div>    
+            <% }) %> 
+            </div>
+            <script type="text/javascript">
+                document.getElementById("cancel").onclick = function () {
+                    location.href = "/campgrounds/<%=camp.id%>";
+                };
+            </script>
+        </form>
+    </div>
+</div>
