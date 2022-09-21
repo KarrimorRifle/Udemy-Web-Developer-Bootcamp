@@ -1,3 +1,4 @@
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 //Vital Requires
 const express = require('express');
 const path = require('path');
@@ -24,6 +25,14 @@ if(process.env.NODE_ENV !== "production"){
   require('dotenv').config();
 };
 
+//connect-mongo session storage setup
+const mongoDBStore = require('connect-mongo');
+const store = mongoDBStore.create({
+  mongoUrl: dbUrl,
+  secret: process.env.SECRET,
+  touchAfter: 24 * 3600
+});
+
 //express set up
 app.engine('ejs',engine);
 app.use(methodoverride('_method'));
@@ -32,7 +41,9 @@ app.use(express.json());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(session({secret: 'haKBsg30s',
+app.use(session({
+  store,
+  secret: process.env.SECRET,
   keepSessionInfo:true,
   resave: false,
   saveUninitialized: true,
@@ -44,8 +55,54 @@ app.use(session({secret: 'haKBsg30s',
 }));
 app.use(flash());
 app.use(mongoSanitize());
-app.use(helmet({contentSecurityPolicy: false,
-  referrerPolicy: false}));
+
+//helmet
+app.use(helmet());
+app.use(helmet.crossOriginEmbedderPolicy({ policy: "credentialless" }));
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com",
+  "https://api.tiles.mapbox.com",
+  "https://*.mapbox.com/",
+  "https://kit.fontawesome.com",
+  "https://cdnjs.cloudflare.com",
+  "https://cdn.jsdelivr.net",
+];
+const styleSrcUrls = [
+  "https://kit-free.fontawesome.com",
+  "https://stackpath.bootstrapcdn.com",
+  "https://api.mapbox.com",
+  "https://api.tiles.mapbox.com",
+  "https://fonts.googleapis.com",
+  "https://use.fontawesome.com",
+  "https://cdn.jsdelivr.net/"
+];
+const connectSrcUrls = [
+  "https://api.mapbox.com",
+  "https://*.tiles.mapbox.com",
+  "https://events.mapbox.com",
+];
+const fontSrcUrls = [];
+app.use(
+  helmet.contentSecurityPolicy({
+      directives: {
+          defaultSrc: [],
+          connectSrc: ["'self'", ...connectSrcUrls],
+          scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+          styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+          workerSrc: ["'self'", "blob:"],
+          childSrc: ["blob:"],
+          objectSrc: [],
+          imgSrc: [
+              "'self'",
+              "blob:",
+              "data:",
+              "https://res.cloudinary.com/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+              "https://images.unsplash.com",
+          ],
+          fontSrc: ["'self'", ...fontSrcUrls],
+      },
+  })
+);
 
 //passport
 app.use(passport.initialize());
@@ -54,18 +111,19 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+//mongoose set up
+const mongoose = require('mongoose');
+main().catch(err => console.log(err));
+//'mongodb://localhost:27017/yelp-camp'
+async function main() {
+  await mongoose.connect(dbUrl);
+  // use `await mongoose.connect('mongodb://user:password@localhost:27017/yelpcamp');` if your database has auth enabled
+}
+
 //Route requires
 const campgroundsRoute = require('./routes/campgrounds');
 const reviewsRoute = require('./routes/review');
 const usersRoute = require('./routes/users');
-
-//mongoose set up
-const mongoose = require('mongoose');
-main().catch(err => console.log(err));
-async function main() {
-  await mongoose.connect('mongodb://localhost:27017/yelp-camp');
-  // use `await mongoose.connect('mongodb://user:password@localhost:27017/yelpcamp');` if your database has auth enabled
-}
 
 //flash middleware
 app.use((req,res,next) => {
